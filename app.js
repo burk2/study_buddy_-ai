@@ -1,119 +1,117 @@
 import { auth, db } from "./firestore.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
-  doc, setDoc, getDoc, updateDoc, arrayUnion 
+  doc, 
+  setDoc, 
+  getDoc, 
+  updateDoc, 
+  arrayUnion 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ------------------- GLOBALS -------------------
-let currentSubject = "General";
-let flashcards = [];
+// ✅ Ensure user is logged in
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+  } else {
+    loadFlashcards(user.uid);
+  }
+});
 
-// ------------------- SUBJECT -------------------
-window.setSubject = (subject) => {
-  currentSubject = subject;
-  alert(`Switched subject to: ${subject}`);
-};
-
-// ------------------- LOGOUT -------------------
-window.logout = async () => {
+// ✅ Logout
+document.getElementById("logoutBtn").addEventListener("click", async () => {
   await signOut(auth);
-  window.location.href = "index.html";
-};
+  window.location.href = "login.html";
+});
 
-// ------------------- AI CHAT -------------------
-const API_KEY = "YOUR_GEMINI_API_KEY"; // <-- Replace with your Gemini key
+// ---------------- AI CHAT ----------------
+const chatBox = document.getElementById("chatBox");
+const chatInput = document.getElementById("chatInput");
+const sendChat = document.getElementById("sendChat");
 
-window.sendMessage = async () => {
-  const input = document.getElementById("chatInput");
-  const chatBox = document.getElementById("chatBox");
-  const question = input.value.trim();
+sendChat.addEventListener("click", async () => {
+  const question = chatInput.value.trim();
   if (!question) return;
 
-  // Add user message
-  chatBox.innerHTML += `<div class="text-right"><span class="bg-yellow-500 text-black px-3 py-1 rounded-lg">${question}</span></div>`;
-  input.value = "";
+  // Display user message
+  const userMsg = document.createElement("div");
+  userMsg.className = "text-right text-yellow-400";
+  userMsg.textContent = "You: " + question;
+  chatBox.appendChild(userMsg);
 
-  try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: `Subject: ${currentSubject}. Question: ${question}` }] }]
-      })
-    });
+  chatInput.value = "";
 
-    const data = await response.json();
-    const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ No response";
-    
-    // Add AI reply
-    chatBox.innerHTML += `<div class="text-left"><span class="bg-gray-200 text-black px-3 py-1 rounded-lg">${aiText}</span></div>`;
-    chatBox.scrollTop = chatBox.scrollHeight;
-  } catch (err) {
-    console.error("AI error:", err);
-    chatBox.innerHTML += `<div class="text-left text-red-500">Error connecting to AI</div>`;
+  // Fake AI response for now (replace with Gemini API later)
+  const aiMsg = document.createElement("div");
+  aiMsg.className = "text-left text-green-400";
+  aiMsg.textContent = "AI: That's an interesting question about STEM!";
+  chatBox.appendChild(aiMsg);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+
+// ---------------- FLASHCARDS ----------------
+const addFlashcardBtn = document.getElementById("addFlashcard");
+const flashcardList = document.getElementById("flashcardList");
+const downloadBtn = document.getElementById("downloadFlashcards");
+
+async function loadFlashcards(uid) {
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  if (userSnap.exists() && userSnap.data().flashcards) {
+    displayFlashcards(userSnap.data().flashcards);
   }
-};
+}
 
-// ------------------- FLASHCARDS -------------------
-window.addFlashcard = async () => {
-  const input = document.getElementById("flashcardInput");
-  const text = input.value.trim();
-  if (!text) return;
+addFlashcardBtn.addEventListener("click", async () => {
+  const question = document.getElementById("flashQuestion").value.trim();
+  const answer = document.getElementById("flashAnswer").value.trim();
 
-  flashcards.push(text);
-  renderFlashcards();
-
-  input.value = "";
+  if (!question || !answer) return alert("Please enter both question and answer.");
 
   const user = auth.currentUser;
-  if (user) {
-    const userDoc = doc(db, "users", user.uid);
-    await setDoc(userDoc, { flashcards: arrayUnion(text) }, { merge: true });
-  }
-};
+  const userRef = doc(db, "users", user.uid);
 
-function renderFlashcards() {
-  const container = document.getElementById("flashcards");
-  container.innerHTML = "";
-  flashcards.forEach((card, index) => {
-    container.innerHTML += `
-      <div class="p-3 border rounded bg-yellow-50 shadow flex justify-between items-center">
-        <span>${card}</span>
-        <button onclick="removeFlashcard(${index})" class="text-red-500 hover:text-red-700">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-    `;
+  await updateDoc(userRef, {
+    flashcards: arrayUnion({ question, answer })
+  }).catch(async () => {
+    // If flashcards field doesn't exist yet
+    await setDoc(userRef, { flashcards: [{ question, answer }] }, { merge: true });
+  });
+
+  displayFlashcards([{ question, answer }], true);
+
+  document.getElementById("flashQuestion").value = "";
+  document.getElementById("flashAnswer").value = "";
+});
+
+function displayFlashcards(cards, append = false) {
+  if (!append) flashcardList.innerHTML = "";
+  cards.forEach(card => {
+    const div = document.createElement("div");
+    div.className = "bg-gray-800 p-2 rounded text-white";
+    div.innerHTML = `<b>Q:</b> ${card.question} <br><b>A:</b> ${card.answer}`;
+    flashcardList.appendChild(div);
   });
 }
 
-window.removeFlashcard = (index) => {
-  flashcards.splice(index, 1);
-  renderFlashcards();
-};
+// ✅ Download as JSON
+downloadBtn.addEventListener("click", async () => {
+  const user = auth.currentUser;
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
 
-window.downloadFlashcards = () => {
-  const blob = new Blob([flashcards.join("\n")], { type: "text/plain" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "flashcards.txt";
-  a.click();
-  URL.revokeObjectURL(url);
-};
+  if (userSnap.exists() && userSnap.data().flashcards) {
+    const flashcards = userSnap.data().flashcards;
+    const blob = new Blob([JSON.stringify(flashcards, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
 
-// ------------------- LOAD USER FLASHCARDS -------------------
-auth.onAuthStateChanged(async (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists() && docSnap.data().flashcards) {
-    flashcards = docSnap.data().flashcards;
-    renderFlashcards();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "flashcards.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  } else {
+    alert("No flashcards to download.");
   }
 });
