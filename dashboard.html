@@ -3,42 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard | Study Buddy</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Dashboard | AI Study Buddy</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
-<body class="bg-black text-yellow-400 min-h-screen flex flex-col">
-  <header class="p-4 flex justify-between items-center bg-yellow-500 text-black">
-    <h1 class="text-2xl font-bold">Study Buddy Dashboard</h1>
-    <button id="logoutBtn" class="bg-black text-yellow-400 px-4 py-2 rounded">Logout</button>
+<body class="bg-black text-yellow-400 font-sans min-h-screen flex flex-col">
+
+  <!-- Top Bar -->
+  <header class="bg-black border-b border-yellow-500 p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-yellow-500">📚 AI Study Buddy</h1>
+    <button onclick="logout()" class="text-red-500 hover:text-red-700 font-semibold">
+      Logout
+    </button>
   </header>
 
-  <main class="flex-1 p-6 bg-[#fef9e7] text-black">
-    <h2 class="text-xl font-bold mb-4">Choose a Subject</h2>
-    <div class="flex gap-3 mb-6">
-      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Math">Math</button>
-      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Physics">Physics</button>
-      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Biology">Biology</button>
-      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Chemistry">Chemistry</button>
-      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Computer Science">CS</button>
-    </div>
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col md:flex-row bg-[#fef9e7] text-black">
 
-    <div>
-      <h3 class="text-lg font-bold">AI Chat</h3>
-      <textarea id="chatInput" placeholder="Ask anything..." class="w-full p-2 border rounded mt-2"></textarea>
-      <button id="chatSend" class="mt-2 bg-yellow-500 text-black px-4 py-2 rounded">Send</button>
-      <div id="chatOutput" class="mt-4 bg-white p-3 rounded shadow"></div>
-    </div>
+    <!-- Sidebar Subjects -->
+    <aside class="w-full md:w-1/4 bg-black text-yellow-400 p-4 space-y-3">
+      <h2 class="text-lg font-bold mb-2">Subjects</h2>
+      <button class="w-full bg-yellow-500 text-black py-2 rounded hover:bg-yellow-600" onclick="setSubject('Math')">Math</button>
+      <button class="w-full bg-yellow-500 text-black py-2 rounded hover:bg-yellow-600" onclick="setSubject('Physics')">Physics</button>
+      <button class="w-full bg-yellow-500 text-black py-2 rounded hover:bg-yellow-600" onclick="setSubject('Chemistry')">Chemistry</button>
+      <button class="w-full bg-yellow-500 text-black py-2 rounded hover:bg-yellow-600" onclick="setSubject('Biology')">Biology</button>
+      <button class="w-full bg-yellow-500 text-black py-2 rounded hover:bg-yellow-600" onclick="setSubject('Computer Science')">Computer Science</button>
+    </aside>
 
-    <div class="mt-8">
-      <h3 class="text-lg font-bold">Flashcards</h3>
-      <input type="text" id="topicInput" placeholder="Enter topic" class="p-2 border rounded w-full mt-2" />
-      <button id="generateFlashcards" class="mt-2 bg-yellow-500 text-black px-4 py-2 rounded">Generate</button>
-      <div id="flashcardOutput" class="mt-4 bg-white p-3 rounded shadow"></div>
-      <button id="downloadFlashcards" class="mt-4 bg-green-500 text-white px-4 py-2 rounded">Download</button>
-    </div>
+    <!-- Chat + Flashcards Area -->
+    <section class="flex-1 p-6 flex flex-col space-y-6">
+      
+      <!-- Chat Window -->
+      <div class="flex-1 flex flex-col bg-white border rounded-lg shadow p-4">
+        <h2 class="text-xl font-bold text-yellow-600 mb-2">AI Tutor</h2>
+        <div id="chatBox" class="flex-1 overflow-y-auto space-y-2 p-2 border rounded bg-gray-50"></div>
+        <div class="mt-3 flex">
+          <input id="chatInput" type="text" placeholder="Ask anything in STEM..." class="flex-1 p-2 border rounded-l" />
+          <button onclick="sendMessage()" class="bg-yellow-500 text-black px-4 rounded-r hover:bg-yellow-600">Send</button>
+        </div>
+      </div>
+
+      <!-- Flashcards -->
+      <div class="bg-white border rounded-lg shadow p-4">
+        <h2 class="text-xl font-bold text-yellow-600 mb-2">Flashcards</h2>
+        <div id="flashcards" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"></div>
+        <div class="flex space-x-2">
+          <input id="flashcardInput" type="text" placeholder="Enter flashcard text..." class="flex-1 p-2 border rounded" />
+          <button onclick="addFlashcard()" class="bg-yellow-500 text-black px-4 rounded hover:bg-yellow-600">Add</button>
+          <button onclick="downloadFlashcards()" class="bg-green-500 text-white px-4 rounded hover:bg-green-600">
+            <i class="fas fa-download"></i> Download
+          </button>
+        </div>
+      </div>
+
+    </section>
   </main>
 
-  <script type="module" src="app.js"></script>
+  <!-- Scripts -->
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
