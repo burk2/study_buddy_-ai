@@ -2,41 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signup - StudyBuddy AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Study Buddy AI</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
-<body class="bg-black text-white flex items-center justify-center min-h-screen">
-  <div class="bg-cream-50 p-8 rounded-lg shadow-lg w-full max-w-md text-center" style="background:#fdf6e3;">
-    <h1 class="text-3xl font-bold text-yellow-500 mb-6">Create Account</h1>
-
-    <!-- Email -->
-    <input id="signupEmail" type="email" placeholder="Email"
-      class="w-full p-3 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500 text-black" />
-
-    <!-- Password -->
-    <input id="signupPassword" type="password" placeholder="Password"
-      class="w-full p-3 mb-6 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500 text-black" />
-
-    <!-- Signup Button -->
-    <button onclick="signup()"
-      class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-4 rounded mb-4">
-      Sign Up
-    </button>
-
-    <p class="text-gray-700 mb-3">Or sign up with</p>
-
-    <!-- Google Sign Up -->
-    <button onclick="googleLogin()" 
-      class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded flex items-center justify-center gap-2">
-      <i class="fab fa-google"></i> Google
-    </button>
-
-    <!-- Link to Login -->
-    <p class="text-gray-800 mt-6">Already have an account? 
-      <a href="login.html" class="text-yellow-500 hover:underline">Login</a>
-    </p>
+<body>
+  <div class="auth-container">
+    <h2>Sign Up</h2>
+    <input type="email" id="signupEmail" placeholder="Email" required />
+    <input type="password" id="signupPassword" placeholder="Password" required />
+    <button id="signupBtn">Sign Up</button>
+    <button id="googleSignupBtn" class="google">Sign Up with Google</button>
+    <p>Already have an account? <a href="login.html">Login</a></p>
   </div>
 
   <script type="module" src="Auth.js"></script>
