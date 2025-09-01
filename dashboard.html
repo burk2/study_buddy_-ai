@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Study Buddy</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-yellow-400 min-h-screen flex flex-col">
+  <header class="p-4 flex justify-between items-center bg-yellow-500 text-black">
+    <h1 class="text-2xl font-bold">Study Buddy Dashboard</h1>
+    <button id="logoutBtn" class="bg-black text-yellow-400 px-4 py-2 rounded">Logout</button>
+  </header>
+
+  <main class="flex-1 p-6 bg-[#fef9e7] text-black">
+    <h2 class="text-xl font-bold mb-4">Choose a Subject</h2>
+    <div class="flex gap-3 mb-6">
+      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Math">Math</button>
+      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Physics">Physics</button>
+      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Biology">Biology</button>
+      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Chemistry">Chemistry</button>
+      <button class="subjectBtn bg-yellow-500 text-black px-4 py-2 rounded" data-subject="Computer Science">CS</button>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold">AI Chat</h3>
+      <textarea id="chatInput" placeholder="Ask anything..." class="w-full p-2 border rounded mt-2"></textarea>
+      <button id="chatSend" class="mt-2 bg-yellow-500 text-black px-4 py-2 rounded">Send</button>
+      <div id="chatOutput" class="mt-4 bg-white p-3 rounded shadow"></div>
+    </div>
+
+    <div class="mt-8">
+      <h3 class="text-lg font-bold">Flashcards</h3>
+      <input type="text" id="topicInput" placeholder="Enter topic" class="p-2 border rounded w-full mt-2" />
+      <button id="generateFlashcards" class="mt-2 bg-yellow-500 text-black px-4 py-2 rounded">Generate</button>
+      <div id="flashcardOutput" class="mt-4 bg-white p-3 rounded shadow"></div>
+      <button id="downloadFlashcards" class="mt-4 bg-green-500 text-white px-4 py-2 rounded">Download</button>
+    </div>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
