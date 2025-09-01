@@ -1,51 +1,70 @@
-// auth.js
-import { auth, provider } from "./firebase-config.js";
+import { auth, db } from "./firestore.js";
 import { 
-  signInWithPopup, 
-  signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  signOut 
+  signInWithEmailAndPassword, 
+  GoogleAuthProvider, 
+  signInWithPopup 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Google login
-export async function loginWithGoogle() {
+// ---------------- SIGN UP ----------------
+window.signup = async () => {
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Store basic user info in Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      createdAt: new Date(),
+      subscription: { active: false }
+    });
+
+    alert("Signup successful!");
+    window.location.href = "subscription.html";
+  } catch (error) {
+    alert(error.message);
+    console.error("Signup error:", error.message);
+  }
+};
+
+// ---------------- LOGIN ----------------
+window.login = async () => {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    alert("Login successful!");
+    window.location.href = "subscription.html";
+  } catch (error) {
+    alert(error.message);
+    console.error("Login error:", error.message);
+  }
+};
+
+// ---------------- GOOGLE SIGN-IN ----------------
+window.googleLogin = async () => {
+  const provider = new GoogleAuthProvider();
+
   try {
     const result = await signInWithPopup(auth, provider);
-    return result.user;
-  } catch (err) {
-    console.error("Google login error:", err.message);
-    alert("Google login failed: " + err.message);
-  }
-}
+    const user = result.user;
 
-// Email signup
-export async function signupWithEmail(email, password) {
-  try {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    return result.user;
-  } catch (err) {
-    console.error("Signup error:", err.message);
-    alert("Signup failed: " + err.message);
-  }
-}
+    // Save user info in Firestore if new
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      createdAt: new Date(),
+      subscription: { active: false }
+    }, { merge: true });
 
-// Email login
-export async function loginWithEmail(email, password) {
-  try {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    return result.user;
-  } catch (err) {
-    console.error("Login error:", err.message);
-    alert("Login failed: " + err.message);
+    alert("Google login successful!");
+    window.location.href = "subscription.html";
+  } catch (error) {
+    alert(error.message);
+    console.error("Google login error:", error.message);
   }
-}
-
-// Logout
-export async function logoutUser() {
-  try {
-    await signOut(auth);
-    alert("You have logged out.");
-  } catch (err) {
-    console.error("Logout error:", err.message);
-  }
-}
+};
