@@ -3,19 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Subscription | Study Buddy</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Subscribe | AI Study Buddy</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
-<body class="bg-black text-yellow-400 flex flex-col items-center justify-center h-screen">
-  <button onclick="window.location.href='dashboard.html'" class="absolute top-4 right-4 text-xl">✖</button>
+<body class="bg-black text-yellow-400 flex items-center justify-center min-h-screen font-sans">
 
-  <h2 class="text-3xl font-bold mb-4">Subscribe to Unlock</h2>
-  <p class="mb-6 text-gray-300">Get full access for <span class="font-bold">$20/month</span></p>
+  <!-- Subscription Card -->
+  <div class="bg-[#fef9e7] text-black rounded-lg shadow-lg p-8 w-full max-w-md relative">
+    
+    <!-- Exit button -->
+    <button onclick="window.location.href='dashboard.html'" 
+      class="absolute top-3 right-3 text-red-600 text-lg">
+      <i class="fas fa-times"></i>
+    </button>
 
-  <div class="flex flex-col gap-4">
-    <button class="bg-blue-500 text-white px-6 py-3 rounded">Pay with PayPal</button>
-    <button class="bg-green-500 text-white px-6 py-3 rounded">Pay with Airtel Money</button>
+    <h1 class="text-3xl font-bold text-center text-yellow-500 mb-6">Pro Plan</h1>
+    <p class="text-center text-lg mb-4">Unlock AI Study Buddy for only:</p>
+    <p class="text-center text-4xl font-bold text-yellow-600 mb-6">$20 / month</p>
+
+    <!-- Benefits -->
+    <ul class="mb-6 space-y-2 text-gray-800">
+      <li><i class="fas fa-check text-green-600"></i> Unlimited STEM conversations</li>
+      <li><i class="fas fa-check text-green-600"></i> Save & download flashcards</li>
+      <li><i class="fas fa-check text-green-600"></i> Cloud storage for your study data</li>
+    </ul>
+
+    <!-- Payment Buttons -->
+    <div class="flex flex-col space-y-4">
+      <button id="airtelPay" class="bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700 transition">
+        <i class="fas fa-mobile-alt"></i> Pay with Airtel
+      </button>
+      <button id="paypalPay" class="bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+        <i class="fab fa-paypal"></i> Pay with PayPal
+      </button>
+    </div>
   </div>
+
+  <!-- Script -->
+  <script type="module">
+    import { activateSubscription } from "./subscription.js";
+
+    const airtelBtn = document.getElementById("airtelPay");
+    if (airtelBtn) {
+      airtelBtn.addEventListener("click", async () => {
+        await activateSubscription("Airtel");
+        window.location.href = "dashboard.html";
+      });
+    }
+
+    const paypalBtn = document.getElementById("paypalPay");
+    if (paypalBtn) {
+      paypalBtn.addEventListener("click", async () => {
+        await activateSubscription("PayPal");
+        window.location.href = "dashboard.html";
+      });
+    }
+  </script>
 </body>
 </html>
