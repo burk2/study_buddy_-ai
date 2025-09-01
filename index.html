@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-yellow-400 flex flex-col items-center justify-center h-screen text-center px-4">
+<body class="bg-black text-yellow-400 flex flex-col items-center justify-center h-screen text-center px-4 relative">
   <h1 class="text-5xl font-bold mb-6">AI Study Buddy</h1>
   <p class="text-lg text-gray-200 mb-10 max-w-xl">
     Master STEM subjects with AI-powered flashcards & interactive conversations.
@@ -16,5 +16,30 @@
      class="bg-yellow-500 text-black px-8 py-3 rounded-lg font-bold hover:bg-yellow-400 transition">
      Get Started
   </a>
+
+  <!-- Subscription Popup -->
+  <div id="popup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-gray-900 text-yellow-400 p-6 rounded-lg shadow-lg relative max-w-sm w-full">
+      <!-- Close button -->
+      <button id="closePopup" class="absolute top-2 right-2 text-gray-400 hover:text-white text-2xl">&times;</button>
+
+      <h2 class="text-2xl font-bold mb-4">Subscribe to AI Study Buddy</h2>
+      <p class="mb-6 text-gray-300">Unlock all flashcards, AI conversations & storage for only <span class="text-yellow-500 font-bold">$20/month</span>.</p>
+
+      <a href="subscription.html" class="block bg-yellow-500 text-black px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition text-center">
+        Subscribe Now
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Handle popup close
+    const popup = document.getElementById("popup");
+    const closeBtn = document.getElementById("closePopup");
+
+    closeBtn.addEventListener("click", () => {
+      popup.style.display = "none";
+    });
+  </script>
 </body>
 </html>
