@@ -1,4 +1,3 @@
-// netlify/functions/paypal.js
 import fetch from "node-fetch";
 
 export async function handler(event) {
@@ -20,7 +19,10 @@ export async function handler(event) {
     const tokenData = await tokenRes.json();
 
     if (!tokenData.access_token) {
-      return { statusCode: 500, body: JSON.stringify({ error: "Failed to authenticate with PayPal" }) };
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "Failed to authenticate with PayPal" }),
+      };
     }
 
     return {
@@ -28,6 +30,9 @@ export async function handler(event) {
       body: JSON.stringify({ access_token: tokenData.access_token }),
     };
   } catch (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
   }
 }
