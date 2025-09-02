@@ -16,7 +16,11 @@ function renderMessages(messages) {
   messages.forEach((msg) => {
     const div = document.createElement("div");
     div.className = msg.role === "user" ? "text-right mb-2" : "text-left mb-2";
-    div.innerHTML = `<span class="inline-block px-4 py-2 rounded-lg ${msg.role === "user" ? "bg-yellow-500 text-black" : "bg-gray-700 text-yellow-400"}">${msg.content}</span>`;
+    div.innerHTML = `<span class="inline-block px-4 py-2 rounded-lg ${
+      msg.role === "user"
+        ? "bg-yellow-500 text-black"
+        : "bg-gray-700 text-yellow-400"
+    }">${msg.content}</span>`;
     chatBox.appendChild(div);
   });
   chatBox.scrollTop = chatBox.scrollHeight;
@@ -25,7 +29,7 @@ function renderMessages(messages) {
 // 🔹 Render conversation history
 function renderHistory() {
   historyBox.innerHTML = "";
-  history.forEach((conv, idx) => {
+  history.forEach((conv) => {
     const btn = document.createElement("button");
     btn.className = "block w-full text-left px-2 py-1 hover:bg-gray-800";
     btn.textContent = conv.q;
@@ -73,7 +77,10 @@ sendBtn.addEventListener("click", async () => {
     renderHistory();
     renderMessages(conversation.messages);
   } catch (error) {
-    conversation.messages.push({ role: "ai", content: "⚠️ Error: " + error.message });
+    conversation.messages.push({
+      role: "ai",
+      content: "⚠️ Error: " + error.message,
+    });
     renderMessages(conversation.messages);
   }
 
@@ -82,7 +89,15 @@ sendBtn.addEventListener("click", async () => {
 
 // 🔹 Flashcards: download as TXT
 flashBtn.addEventListener("click", () => {
-  let flashcards = history.map(h => `Q: ${h.q}\nA: ${h.messages.find(m => m.role === "ai")?.content || "No answer"}\n`).join("\n---\n");
+  let flashcards = history
+    .map(
+      (h) =>
+        `Q: ${h.q}\nA: ${
+          h.messages.find((m) => m.role === "ai")?.content || "No answer"
+        }\n`
+    )
+    .join("\n---\n");
+
   const blob = new Blob([flashcards], { type: "text/plain" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
