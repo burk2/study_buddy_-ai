@@ -1,0 +1,27 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+#chatWindow {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.message {
+  padding: 10px;
+  border-radius: 6px;
+  max-width: 75%;
+}
+
+.user {
+  background-color: #ffd60a;
+  color: #000;
+  align-self: flex-end;
+}
+
+.ai {
+  background-color: #333;
+  color: #fff;
+  align-self: flex-start;
+}
